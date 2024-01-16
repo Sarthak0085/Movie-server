@@ -6,12 +6,12 @@ import User from "../models/user.model.js";
 export const getMovies = catchAsyncError(async (req, res, next) => {
     try {
         // filter movies by category, time, rate, language, search and year
-        const { category, time, rate, language, year, search } = req.query;
+        const { category, time, rating, language, year, search } = req.query;
         let query = {
             ...(category && { category }),
             ...(time && { time }),
             ...(language && { language }),
-            ...(rate && { rate }),
+            ...(rating && { rating }),
             ...(year && { year }),
             ...(search && { name: { $regex: search, $option: "i" } })
         };

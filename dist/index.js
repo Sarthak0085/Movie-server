@@ -10,7 +10,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 const corsOptions = {
-    origin: 'http://localhost:5173', // Replace with your frontend domain
+    origin: 'movie-frontend-pyjkmb8ms-sarthaks-projects-85977503.vercel.app',
 };
 const server = createServer(app);
 const io = new Server(server, {
