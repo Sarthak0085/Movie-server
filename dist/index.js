@@ -12,29 +12,16 @@ app.use(express.json());
 // const corsOptions = {
 //     origin: 'movie-frontend-six-rho.vercel.app',
 // };
-const allowedOrigins = ['http://localhost:5173', 'https://movie-frontend-six-rho.vercel.app'];
+const allowedOrigins = process.env.ALLOWED_ORIGIN;
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: function (origin, callback) {
-            if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true);
-            }
-            else {
-                callback(new Error('Not allowed by CORS'));
-            }
-        }
+        origin: allowedOrigins,
+        methods: ["GET", "POST"],
     },
 });
 app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        }
-        else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    }
+    origin: allowedOrigins,
 }));
 //connect db
 connectDB();
