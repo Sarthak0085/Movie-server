@@ -13,7 +13,7 @@ const app = express();
 app.use(express.json());
 
 const corsOptions = {
-    origin: 'movie-frontend-pyjkmb8ms-sarthaks-projects-85977503.vercel.app',
+    origin: 'movie-frontend-six-rho.vercel.app',
 };
 
 
