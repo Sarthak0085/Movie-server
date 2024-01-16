@@ -12,18 +12,35 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-const corsOptions = {
-    origin: 'movie-frontend-six-rho.vercel.app',
-};
+// const corsOptions = {
+//     origin: 'movie-frontend-six-rho.vercel.app',
+// };
 
+const allowedOrigins = ['http://localhost:5173', 'https://movie-frontend-six-rho.vercel.app'];
 
 const server = createServer(app);
 const io = new Server(server, {
-    cors: corsOptions,
+    cors: {
+        origin: function (origin, callback) {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        }
+    },
 });
 
 
-app.use(cors(corsOptions));
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    }
+}));
 
 //connect db
 connectDB();
