@@ -50,18 +50,14 @@ const MovieSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    category: [
-      {
+    category:{
         type: String,
         required: true,
-      }
-    ],
-    language: [
-      {
+      },
+    language: {
         type: String,
         required: true,
-      }
-    ],
+      },
     year: {
       type: Number,
       required: true,
