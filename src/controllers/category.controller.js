@@ -1,20 +1,25 @@
-import Categories from "../models/category.model.js";
 import { catchAsyncError } from "../middlewares/catchAsyncErrors.js";
+import Categories from "../models/category.model.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
+
 //*********** Public Controller ******************/
+
 // get all categories
 export const getAllCategories = catchAsyncError(async (req, res, next) => {
     try {
         // find all categories in databse
         const categories = await Categories.find({});
+
         res.json(categories);
-    }
-    catch (error) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
+
 //********** Admin Controller *********************/
+
 //create new category
+
 export const createCategory = catchAsyncError(async (req, res, next) => {
     try {
         // get request from the body
@@ -30,11 +35,11 @@ export const createCategory = catchAsyncError(async (req, res, next) => {
             success: true,
             createdCategory
         });
-    }
-    catch (error) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
+
 // upadte category
 export const updateCategory = catchAsyncError(async (req, res, next) => {
     try {
@@ -43,17 +48,18 @@ export const updateCategory = catchAsyncError(async (req, res, next) => {
         if (!category) {
             return next(new ErrorHandler("Category not found", 404));
         }
+
         category.title = req.body.title || category.title;
         const updatedCategory = await category.save();
         res.status(201).json({
             success: true,
             updatedCategory
         });
-    }
-    catch (error) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
+
 // delete category
 export const deleteCategory = catchAsyncError(async (req, res, next) => {
     try {
@@ -63,12 +69,12 @@ export const deleteCategory = catchAsyncError(async (req, res, next) => {
         if (!category) {
             return next(new ErrorHandler("Category not found", 404));
         }
+
         res.status(201).json({
             success: true,
             message: "Category Removed"
         });
-    }
-    catch (error) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });

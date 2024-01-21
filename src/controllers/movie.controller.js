@@ -2,6 +2,7 @@ import Movie from "../models/movie.model.js";
 import { catchAsyncError } from "../middlewares/catchAsyncErrors.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
 import User from "../models/user.model.js";
+
 //get movies
 export const getMovies = catchAsyncError(async (req, res, next) => {
     try {
@@ -14,18 +15,22 @@ export const getMovies = catchAsyncError(async (req, res, next) => {
             ...(rating && { rating }),
             ...(year && { year }),
             ...(search && { name: { $regex: search, $option: "i" } })
-        };
+        }
+
         //load more movies functionality
         const page = Number(req.query.pageNumber) || 1; //if page number is not provided then it set to be 1
         const limit = 2; // 2 movies /page
         const skip = (page - 1) * limit; // skip 2 movies/ page
+
         //find movies by query, skip and limit
         const movies = await Movie.find(query)
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
+
         //get total number of movies
         const count = await Movie.countDocuments(query);
+
         //send response with movies and total number of movies
         res.status(201).json({
             success: true,
@@ -33,30 +38,36 @@ export const getMovies = catchAsyncError(async (req, res, next) => {
             page,
             pages: Math.ceil(count / limit), // total number of pages
             totalMovies: count, // total movies count
-        });
-    }
-    catch (error) {
+        })
+
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
+
+
 //****************** Private Controllers ***********************
+
+
 // get movie by id 
 export const getMovieById = catchAsyncError(async (req, res, next) => {
     try {
         // find movie by id
         const movie = await Movie.findById(req.params.id);
+
         if (!movie) {
             return next(new ErrorHandler("Movie Not Found", 404));
         }
+
         res.status(201).json({
             success: true,
             movie
-        });
-    }
-    catch (error) {
+        })
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
+
 //get top rated movies
 export const getTopRatedMovies = catchAsyncError(async (req, res, next) => {
     try {
@@ -66,11 +77,12 @@ export const getTopRatedMovies = catchAsyncError(async (req, res, next) => {
             success: true,
             movies
         });
-    }
-    catch (error) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
+
+
 //get random movies
 export const getRandomMovies = catchAsyncError(async (req, res, next) => {
     try {
@@ -81,29 +93,39 @@ export const getRandomMovies = catchAsyncError(async (req, res, next) => {
             success: true,
             movies
         });
-    }
-    catch (error) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
+
 //create movie review
 export const createMovieReview = catchAsyncError(async (req, res, next) => {
     console.log("  " + req.userId);
+
     const { rating, comment } = req.body;
     try {
         // find movie by id in database
         const user = await User.findById(req.userId);
+
         if (!user) {
             return next(new ErrorHandler("User not found", 404));
         }
+
         const movie = await Movie.findById(req.params.id);
+
         // check if movie exist then add review in it
         if (movie) {
             // check if the user already reviewed the movie
-            const alreadyReviewed = movie.reviews.find((r) => r.userId.toString() == user._id);
+
+            const alreadyReviewed = movie.reviews.find(
+                (r) => r.userId.toString() == user._id
+            );
+
             if (alreadyReviewed) {
                 return next(new ErrorHandler("Already Reviewed", 401));
             }
+
+
             // create new review
             const review = {
                 userName: user.userName,
@@ -111,35 +133,54 @@ export const createMovieReview = catchAsyncError(async (req, res, next) => {
                 userImage: user.image,
                 rating: Number(rating),
                 comment,
-            };
+            }
+
             // push new review into the reviews array
             movie.reviews.push(review);
             // increment the number of reviews
             movie.numOfReviews = movie.reviews.length;
+
             // calculate the new rate
             // @ts-ignore
             movie.rating = movie.reviews.reduce((acc, item) => item.rating + acc, 0) / movie.reviews.length;
+
             await movie.save();
+
             //send the new movie to the client
             res.status(201).json({
                 success: true,
                 message: "Review added",
-            });
+            })
         }
         else {
-            return next(new ErrorHandler("Movie not found", 404));
+            return next(new ErrorHandler("Movie not found", 404))
         }
-    }
-    catch (error) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
+
 // ***************** Admin **********************
+
 //create new movie
 export const createMovie = catchAsyncError(async (req, res, next) => {
     try {
         // get data from request body
-        const { name, desc, image, titleImage, rating, category, numOfReviews, time, language, year, video, casts } = req.body;
+        const {
+            name,
+            desc,
+            image,
+            titleImage,
+            rating,
+            category,
+            numOfReviews,
+            time,
+            language,
+            year,
+            video,
+            casts
+        } = req.body;
+
         // create a new movie 
         const movie = new Movie({
             name,
@@ -155,7 +196,8 @@ export const createMovie = catchAsyncError(async (req, res, next) => {
             video,
             casts,
             userId: req.userId
-        });
+        })
+
         // if movie created then save it in database
         if (movie) {
             await movie.save();
@@ -164,18 +206,32 @@ export const createMovie = catchAsyncError(async (req, res, next) => {
         else {
             return next(new ErrorHandler("Invalid Movie data", 400));
         }
-    }
-    catch (error) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
+
 // update a movie
 export const updateMovie = catchAsyncError(async (req, res, next) => {
     try {
         // get data from request body
-        const { name, desc, image, titleImage, rating, category, numOfReviews, time, language, year, video, casts } = req.body;
+        const {
+            name,
+            desc,
+            image,
+            titleImage,
+            rating,
+            category,
+            numOfReviews,
+            time,
+            language,
+            year,
+            video,
+            casts
+        } = req.body;
         // get movie by id
         const movie = await Movie.findById(req.params.id);
+
         if (!movie) {
             return next(new ErrorHandler("Movie not found", 404));
         }
@@ -192,34 +248,38 @@ export const updateMovie = catchAsyncError(async (req, res, next) => {
         movie.year = year || movie.year;
         movie.video = video || movie.video;
         movie.casts = casts || movie.casts;
+
         //save movie in database
         const updateMovie = await movie.save();
+
         res.status(201).json({
             success: true,
             updateMovie
         });
-    }
-    catch (error) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
+
 //delete a movie
 export const deleteMovie = catchAsyncError(async (req, res, next) => {
     try {
         // find movie in the database
         const movie = await Movie.findByIdAndDelete(req.params.id);
+
         if (!movie) {
             return next(new ErrorHandler("Movie not found", 400));
         }
+
         res.json({
             success: true,
             message: "Movie Removed from database"
         });
-    }
-    catch (error) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
+
 //delete all movies
 export const deleteAllMovie = catchAsyncError(async (req, res, next) => {
     try {
@@ -227,9 +287,8 @@ export const deleteAllMovie = catchAsyncError(async (req, res, next) => {
         res.status(201).json({
             success: true,
             message: "All movies deleted"
-        });
-    }
-    catch (error) {
+        })
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });

@@ -1,4 +1,3 @@
-import { NextFunction, Request, Response } from "express";
 import Language from "../models/language.model.js";
 import { catchAsyncError } from "../middlewares/catchAsyncErrors.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
@@ -6,7 +5,7 @@ import ErrorHandler from "../utils/ErrorHandler.js";
 //*********** Public Controller ******************/
 
 // get all Language
-export const getAllLanguages = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const getAllLanguages = catchAsyncError(async (req, res, next) => {
     try {
         // find all Language in databse
         const languages = await Language.find({});
@@ -15,7 +14,7 @@ export const getAllLanguages = catchAsyncError(async (req: Request, res: Respons
             success: true,
             languages
         });
-    } catch (error: any) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
@@ -24,7 +23,7 @@ export const getAllLanguages = catchAsyncError(async (req: Request, res: Respons
 
 //add new language
 
-export const addNewLanguage = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const addNewLanguage = catchAsyncError(async (req, res, next) => {
     try {
         const { title } = req.body;
         const language = new Language({
@@ -35,13 +34,13 @@ export const addNewLanguage = catchAsyncError(async (req: Request, res: Response
             success: true,
             addLanguage
         });
-    } catch (error: any) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
 
 // upadte language
-export const updateLanguage = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const updateLanguage = catchAsyncError(async (req, res, next) => {
     try {
         const language = await Language.findById(req.params.id);
         // if ctaegory is found then update the category
@@ -55,13 +54,13 @@ export const updateLanguage = catchAsyncError(async (req: Request, res: Response
             success: true,
             updatedLanguage
         });
-    } catch (error: any) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
 
 // delete language
-export const deleteLanguage = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const deleteLanguage = catchAsyncError(async (req, res, next) => {
     try {
         const language = await Language.findByIdAndDelete(req.params.id);
         if (!language) {
@@ -72,7 +71,7 @@ export const deleteLanguage = catchAsyncError(async (req: Request, res: Response
             success: true,
             message: "Language Removed"
         });
-    } catch (error: any) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });

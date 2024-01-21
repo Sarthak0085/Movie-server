@@ -4,10 +4,9 @@ import { generateToken } from "../middlewares/auth.js";
 import { NextFunction, Request, Response } from "express";
 import { catchAsyncError } from "../middlewares/catchAsyncErrors.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
-import movieModel from "../models/movie.model.js";
 
 //register user
-export const registerUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const registerUser = catchAsyncError(async (req, res, next) => {
     const { firstName, lastName, userName, age, email, password, image } = req.body;
     try {
         const isUserExist = await User.findOne({ email });
@@ -42,13 +41,13 @@ export const registerUser = catchAsyncError(async (req: Request, res: Response, 
         } else {
             return next(new ErrorHandler("Invalid User data", 400));
         }
-    } catch (error: any) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
 
 //login user
-export const loginUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const loginUser = catchAsyncError(async (req, res, next) => {
     const { email, password } = req.body;
     try {
         const user = await User.findOne({ email });
@@ -70,13 +69,13 @@ export const loginUser = catchAsyncError(async (req: Request, res: Response, nex
             user,
             token: generateToken(user),
         });
-    } catch (error: any) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
 
 //updating user profile using private routes
-export const updateUserProfile = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const updateUserProfile = catchAsyncError(async (req, res, next) => {
     const { firstName, lastName, userName, email, image } = req.body;
     try {
         //find user in Db
@@ -105,13 +104,13 @@ export const updateUserProfile = catchAsyncError(async (req: Request, res: Respo
         } else {
             return next(new ErrorHandler("User not found", 404));
         }
-    } catch (error: any) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
 
 //deleteing user using private routes
-export const deleteUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const deleteUser = catchAsyncError(async (req, res, next) => {
     try {
         //find user in Db
         const user = await User.findById(req.userId);
@@ -143,14 +142,14 @@ export const deleteUser = catchAsyncError(async (req: Request, res: Response, ne
         //     res.status(404);
         //     throw new Error("User Not Found");
         // }
-    } catch (error: any) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
 
 // change user password
 //deleteing user using private routes
-export const changePassword = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const changePassword = catchAsyncError(async (req, res, next) => {
     const { oldPassword, newPassword } = req.body;
     try {
         //find user in Db
@@ -172,13 +171,13 @@ export const changePassword = catchAsyncError(async (req: Request, res: Response
         } else {
             return next(new ErrorHandler("Old password doesn't match", 403));
         }
-    } catch (error: any) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
 
 //add or remove liked movie
-export const addOrRemoveLikedMovie = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const addOrRemoveLikedMovie = catchAsyncError(async (req, res, next) => {
     const { movieId } = req.body;
     try {
         // find user in db
@@ -218,13 +217,13 @@ export const addOrRemoveLikedMovie = catchAsyncError(async (req: Request, res: R
         else {
             return next(new ErrorHandler("User not found", 404));
         }
-    } catch (error: any) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
 
 //get liked movies 
-export const getAllLikedMovies = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const getAllLikedMovies = catchAsyncError(async (req, res, next) => {
     try {
         const user = await User.findById(req.userId).populate("likedMovies");
         if (!user) {
@@ -246,13 +245,13 @@ export const getAllLikedMovies = catchAsyncError(async (req: Request, res: Respo
             success: true,
             likedMovies
         })
-    } catch (error: any) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 })
 
 //get liked movies 
-export const getAllLikedCategories = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const getAllLikedCategories = catchAsyncError(async (req, res, next) => {
     try {
         const user = await User.findById(req.userId);
         if (!user) {
@@ -268,13 +267,13 @@ export const getAllLikedCategories = catchAsyncError(async (req: Request, res: R
             success: true,
             getLikedCategories
         })
-    } catch (error: any) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 })
 
 //add or remove liked category
-export const addOrRemoveLikedCategory = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const addOrRemoveLikedCategory = catchAsyncError(async (req, res, next) => {
     const { movieId } = req.body;
     try {
         // find user in db
@@ -301,13 +300,13 @@ export const addOrRemoveLikedCategory = catchAsyncError(async (req: Request, res
         else {
             return next(new ErrorHandler("User not found", 404));
         }
-    } catch (error: any) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
 
 // remove all liked movies using private route
-export const removeAlllikedMovies = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const removeAlllikedMovies = catchAsyncError(async (req, res, next) => {
     try {
         // find user in db
         const user = await User.findById(req.userId);
@@ -324,13 +323,13 @@ export const removeAlllikedMovies = catchAsyncError(async (req: Request, res: Re
         else {
             return next(new ErrorHandler("User not found", 404));
         }
-    } catch (error: any) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 404));
     }
 });
 
 // remove all liked movies using private route
-export const removeAlllikedCategories = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const removeAlllikedCategories = catchAsyncError(async (req, res, next) => {
     try {
         // find user in db
         const user = await User.findById(req.userId);
@@ -347,7 +346,7 @@ export const removeAlllikedCategories = catchAsyncError(async (req: Request, res
         else {
             return next(new ErrorHandler("User not found", 404));
         }
-    } catch (error: any) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 404));
     }
 });
@@ -355,7 +354,7 @@ export const removeAlllikedCategories = catchAsyncError(async (req: Request, res
 // ****************** Admin Controller ******************
 
 //get all users 
-export const getAllUsers = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const getAllUsers = catchAsyncError(async (req, res, next) => {
     try {
         //get all users
         const users = await User.find();
@@ -363,14 +362,13 @@ export const getAllUsers = catchAsyncError(async (req: Request, res: Response, n
             success: true,
             users
         });
-    } catch (error: any) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
 
-export const deleteUserByAdmin = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const deleteUserByAdmin = catchAsyncError(async (req, res, next) => {
     try {
-        //find user in Db
         const user = await User.findById(req.params.id);
 
         if (!user) {
@@ -400,7 +398,7 @@ export const deleteUserByAdmin = catchAsyncError(async (req: Request, res: Respo
         //     res.status(404);
         //     throw new Error("User Not Found");
         // }
-    } catch (error: any) {
+    } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
