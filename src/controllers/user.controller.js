@@ -1,8 +1,7 @@
-import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../middlewares/auth.js";
-import { NextFunction, Request, Response } from "express";
 import { catchAsyncError } from "../middlewares/catchAsyncErrors.js";
+import User from "../models/user.model.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
 
 //register user

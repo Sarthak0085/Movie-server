@@ -1,5 +1,5 @@
-import Language from "../models/language.model.js";
 import { catchAsyncError } from "../middlewares/catchAsyncErrors.js";
+import Language from "../models/language.model.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
 
 //*********** Public Controller ******************/

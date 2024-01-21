@@ -1,7 +1,7 @@
-import Movie from "../models/movie.model.js";
 import { catchAsyncError } from "../middlewares/catchAsyncErrors.js";
-import ErrorHandler from "../utils/ErrorHandler.js";
+import Movie from "../models/movie.model.js";
 import User from "../models/user.model.js";
+import ErrorHandler from "../utils/ErrorHandler.js";
 
 //get movies
 export const getMovies = catchAsyncError(async (req, res, next) => {

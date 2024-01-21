@@ -1,7 +1,7 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import User from "../models/user.model.js";
-import { catchAsyncError } from './catchAsyncErrors.js';
 import ErrorHandler from '../utils/ErrorHandler.js';
+import { catchAsyncError } from './catchAsyncErrors.js';
 
 // authenticated user and get token
 const generateToken = (user) => {
@@ -54,7 +54,5 @@ const isAdmin = async (req, res, next) => {
     return next();
 }
 export {
-    generateToken,
-    isAuthenticated,
-    isAdmin,
+    generateToken, isAdmin, isAuthenticated
 };

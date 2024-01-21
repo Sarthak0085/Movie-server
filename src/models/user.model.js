@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
-import { UserType } from "../types/type.js";
 
-const UserSchema = new mongoose.Schema<UserType>({
+const UserSchema = new mongoose.Schema({
     firstName: {
         type: String,
         required: [true, "Please enter your first name"],
@@ -54,6 +53,6 @@ const UserSchema = new mongoose.Schema<UserType>({
     timestamps: true,
 });
 
-const User = mongoose.model<UserType>("User", UserSchema);
+const User = mongoose.model("User", UserSchema);
 
 export default User;
