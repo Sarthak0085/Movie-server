@@ -1,7 +1,5 @@
 # Getting Started
 
-# Local Setup :-
-
 To start this repo :-
 
 1. First clone this repo
